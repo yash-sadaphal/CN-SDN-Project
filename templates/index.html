@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDN Intelligent Traffic Management & Access Control</title>
+    <!-- Modern Typography from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                </svg>
+            </div>
+            <div>
+                <h1 class="header-title">SDN Traffic Manager</h1>
+                <p class="header-subtitle">Software-Defined Networking Control Plane & Access Control Simulator</p>
+            </div>
+        </div>
+        <div class="header-status">
+            <span class="status-badge live-pulse">
+                <span class="pulse-dot"></span>
+                Controller Active: 127.0.0.1
+            </span>
+            <span class="badge badge-info">TY BTech Presentation Demo</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="dashboard-container">
+
+        <!-- SECTION A: Overview Dashboard Statistics -->
+        <section class="stats-grid" aria-label="SDN Overview Metrics">
+            <div class="stat-card">
+                <div class="stat-icon icon-cyan">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="stat-data">
+                    <span class="stat-label">Simulated Switches</span>
+                    <span class="stat-value" id="stat-switches">3</span>
+                    <span class="stat-sub">S1, S2, S3 (Active Mesh)</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </div>
+                <div class="stat-data">
+                    <span class="stat-label">Connected Hosts</span>
+                    <span class="stat-value" id="stat-hosts">5</span>
+                    <span class="stat-sub">H1 to H5 (10.0.0.0/24)</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-data">
+                    <span class="stat-label">Total Simulated Packets</span>
+                    <span class="stat-value" id="stat-total-packets">0</span>
+                    <span class="stat-sub">Ingress evaluations</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-emerald">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-data">
+                    <span class="stat-label">Allowed Packets</span>
+                    <span class="stat-value text-emerald" id="stat-allowed-packets">0</span>
+                    <span class="stat-sub">Routed via shortest BFS</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-rose">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                </div>
+                <div class="stat-data">
+                    <span class="stat-label">Blocked Packets</span>
+                    <span class="stat-value text-rose" id="stat-blocked-packets">0</span>
+                    <span class="stat-sub">Dropped at ingress switch</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-amber">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div class="stat-data">
+                    <span class="stat-label">Active ACL Rules</span>
+                    <span class="stat-value text-amber" id="stat-active-rules">0</span>
+                    <span class="stat-sub">High priority DROP rules</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION B: Network Topology Visualization -->
+        <section class="card topology-section" aria-label="Network Topology View">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Simulated SDN Network Topology</h2>
+                    <p class="card-subtitle">Triangular 3-Switch Mesh (S1, S2, S3) with connected hosts & active links</p>
+                </div>
+                <div class="topology-legend">
+                    <span class="legend-item"><span class="legend-dot switch-dot"></span> OpenFlow Switch</span>
+                    <span class="legend-item"><span class="legend-dot host-dot"></span> End Host</span>
+                    <span class="legend-item"><span class="legend-line active-line"></span> Active Link</span>
+                    <span class="legend-item"><span class="legend-line transit-line"></span> Simulated Transit</span>
+                </div>
+            </div>
+
+            <div class="topology-wrapper" id="topology-container">
+                <!-- Interactive SVG Canvas -->
+                <svg id="topology-svg" viewBox="0 0 950 420" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <!-- Glow filter for simulated active paths -->
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+
+                    <!-- Background Links between Switches -->
+                    <!-- S1 (260, 140) to S2 (500, 90) -->
+                    <line id="link-S1-S2" class="topo-link" x1="280" y1="160" x2="480" y2="120" />
+                    <!-- S2 (500, 90) to S3 (720, 160) -->
+                    <line id="link-S2-S3" class="topo-link" x1="520" y1="120" x2="720" y2="160" />
+                    <!-- S1 (280, 160) to S3 (720, 160) - Direct Link -->
+                    <line id="link-S1-S3" class="topo-link topo-redundant" x1="280" y1="180" x2="720" y2="180" />
+
+                    <!-- Host to Switch Links -->
+                    <!-- H1 to S1 -->
+                    <line id="link-H1-S1" class="host-link" x1="120" y1="110" x2="240" y2="160" />
+                    <!-- H2 to S1 -->
+                    <line id="link-H2-S1" class="host-link" x1="120" y1="230" x2="240" y2="180" />
+                    <!-- H3 to S2 -->
+                    <line id="link-H3-S2" class="host-link" x1="500" y1="270" x2="500" y2="160" />
+                    <!-- H4 to S3 -->
+                    <line id="link-H4-S3" class="host-link" x1="840" y1="110" x2="740" y2="160" />
+                    <!-- H5 to S3 -->
+                    <line id="link-H5-S3" class="host-link" x1="840" y1="230" x2="740" y2="180" />
+
+                    <!-- Link Latency Badges -->
+                    <text x="375" y="130" class="link-label">2ms</text>
+                    <text x="625" y="130" class="link-label">2ms</text>
+                    <text x="500" y="195" class="link-label">4ms (Direct)</text>
+
+                    <!-- Animated Packet Transit Particle (Hidden by default) -->
+                    <circle id="packet-particle" r="6" class="packet-particle" cx="-50" cy="-50"></circle>
+
+                    <!-- HOST NODES -->
+                    <!-- H1 -->
+                    <g id="node-H1" class="host-node" transform="translate(100, 100)">
+                        <circle r="26" class="host-circle"></circle>
+                        <text y="5" class="node-title">H1</text>
+                        <text y="42" class="node-ip">10.0.0.1</text>
+                    </g>
+                    <!-- H2 -->
+                    <g id="node-H2" class="host-node" transform="translate(100, 230)">
+                        <circle r="26" class="host-circle"></circle>
+                        <text y="5" class="node-title">H2</text>
+                        <text y="42" class="node-ip">10.0.0.2</text>
+                    </g>
+                    <!-- H3 -->
+                    <g id="node-H3" class="host-node" transform="translate(500, 280)">
+                        <circle r="26" class="host-circle"></circle>
+                        <text y="5" class="node-title">H3</text>
+                        <text y="42" class="node-ip">10.0.0.3</text>
+                    </g>
+                    <!-- H4 -->
+                    <g id="node-H4" class="host-node" transform="translate(860, 100)">
+                        <circle r="26" class="host-circle"></circle>
+                        <text y="5" class="node-title">H4</text>
+                        <text y="42" class="node-ip">10.0.0.4</text>
+                    </g>
+                    <!-- H5 -->
+                    <g id="node-H5" class="host-node" transform="translate(860, 230)">
+                        <circle r="26" class="host-circle"></circle>
+                        <text y="5" class="node-title">H5</text>
+                        <text y="42" class="node-ip">10.0.0.5</text>
+                    </g>
+
+                    <!-- SWITCH NODES -->
+                    <!-- S1 (Ingress Switch) -->
+                    <g id="node-S1" class="switch-node" transform="translate(255, 160)">
+                        <rect x="-45" y="-35" width="90" height="70" rx="10" class="switch-rect"></rect>
+                        <text y="-8" class="switch-title">S1</text>
+                        <text y="12" class="switch-role">Edge A</text>
+                        <text y="25" class="switch-status-text">● UP</text>
+                    </g>
+
+                    <!-- S2 (Core Switch) -->
+                    <g id="node-S2" class="switch-node" transform="translate(500, 110)">
+                        <rect x="-45" y="-35" width="90" height="70" rx="10" class="switch-rect"></rect>
+                        <text y="-8" class="switch-title">S2</text>
+                        <text y="12" class="switch-role">Core</text>
+                        <text y="25" class="switch-status-text">● UP</text>
+                    </g>
+
+                    <!-- S3 (Egress Switch) -->
+                    <g id="node-S3" class="switch-node" transform="translate(735, 160)">
+                        <rect x="-45" y="-35" width="90" height="70" rx="10" class="switch-rect"></rect>
+                        <text y="-8" class="switch-title">S3</text>
+                        <text y="12" class="switch-role">Edge B</text>
+                        <text y="25" class="switch-status-text">● UP</text>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Switch Details Cards -->
+            <div class="switches-info-bar">
+                <div class="switch-badge-card" id="card-s1">
+                    <div class="s-card-top">
+                        <span class="switch-tag">Switch S1</span>
+                        <span class="pill pill-green">Status: UP</span>
+                    </div>
+                    <div class="s-card-body">
+                        <div><strong>Role:</strong> Ingress / Edge A</div>
+                        <div><strong>Connected Hosts:</strong> H1 (10.0.0.1), H2 (10.0.0.2)</div>
+                        <div><strong>Inter-Switch Links:</strong> S2 (Port 3), S3 (Port 4)</div>
+                    </div>
+                </div>
+
+                <div class="switch-badge-card" id="card-s2">
+                    <div class="s-card-top">
+                        <span class="switch-tag">Switch S2</span>
+                        <span class="pill pill-green">Status: UP</span>
+                    </div>
+                    <div class="s-card-body">
+                        <div><strong>Role:</strong> Core Transit Switch</div>
+                        <div><strong>Connected Hosts:</strong> H3 (10.0.0.3)</div>
+                        <div><strong>Inter-Switch Links:</strong> S1 (Port 2), S3 (Port 3)</div>
+                    </div>
+                </div>
+
+                <div class="switch-badge-card" id="card-s3">
+                    <div class="s-card-top">
+                        <span class="switch-tag">Switch S3</span>
+                        <span class="pill pill-green">Status: UP</span>
+                    </div>
+                    <div class="s-card-body">
+                        <div><strong>Role:</strong> Egress / Edge B</div>
+                        <div><strong>Connected Hosts:</strong> H4 (10.0.0.4), H5 (10.0.0.5)</div>
+                        <div><strong>Inter-Switch Links:</strong> S1 (Port 3), S2 (Port 4)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TWO-COLUMN WORKBENCH: Simulator & IP Access Control -->
+        <div class="two-column-layout">
+
+            <!-- SECTION C & G: Packet Simulator -->
+            <section class="card" aria-label="Packet Simulator">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title">Simulate Packet Transmission</h2>
+                        <p class="card-subtitle">Inject simulated packet into SDN Controller for policy check and BFS routing</p>
+                    </div>
+                </div>
+
+                <!-- Presentation Presets -->
+                <div class="preset-box">
+                    <span class="preset-title">Demo Presets:</span>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('10.0.0.1', '10.0.0.4', 'TCP', 80)">
+                        H1 → H4 (TCP:80)
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('10.0.0.5', '10.0.0.2', 'TCP', 80)">
+                        H5 → H2 (Target Block)
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('10.0.0.2', '10.0.0.3', 'UDP', 53)">
+                        H2 → H3 (UDP:53)
+                    </button>
+                </div>
+
+                <form id="packet-form" class="sim-form" onsubmit="handleSendPacket(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="src-ip">Source IP Address</label>
+                            <input type="text" id="src-ip" name="src_ip" class="form-input" placeholder="e.g. 10.0.0.5" required>
+                            <small class="form-hint">Hosts: 10.0.0.1 to 10.0.0.5</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="dst-ip">Destination IP Address</label>
+                            <input type="text" id="dst-ip" name="dst_ip" class="form-input" placeholder="e.g. 10.0.0.2" required>
+                            <small class="form-hint">Target host in topology</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="protocol">Protocol</label>
+                            <select id="protocol" name="protocol" class="form-select">
+                                <option value="TCP" selected>TCP</option>
+                                <option value="UDP">UDP</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dst-port">Destination Port</label>
+                            <input type="number" id="dst-port" name="dst_port" class="form-input" min="1" max="65535" value="80" required>
+                            <small class="form-hint">Port 1 - 65535</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="btn-send-packet" class="btn btn-primary btn-block">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                            Send Packet to SDN Controller
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Packet Decision Result Card -->
+                <div id="simulation-result" class="decision-card hidden">
+                    <div class="decision-header">
+                        <div class="decision-status-box">
+                            <span class="decision-badge" id="decision-badge">ALLOWED</span>
+                            <span class="decision-rule" id="decision-rule-text">Matched: FLOW-DEF-001</span>
+                        </div>
+                        <span class="decision-time" id="decision-time">Just now</span>
+                    </div>
+
+                    <div class="decision-body">
+                        <div class="decision-reason" id="decision-reason">
+                            Traffic permitted by SDN controller forwarding policy.
+                        </div>
+
+                        <!-- Routing Path Display -->
+                        <div class="path-display-box" id="path-display-box">
+                            <div class="path-title">Simulated Routing Path:</div>
+                            <div class="path-flow" id="path-flow-visual">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION D: IP Access Control Management -->
+            <section class="card" aria-label="IP Access Control Policy">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title">IP-Based Access Control</h2>
+                        <p class="card-subtitle">Install or toggle high-priority DROP flow rules on the SDN Controller</p>
+                    </div>
+                </div>
+
+                <!-- Add Rule Form -->
+                <form id="acl-form" class="acl-form" onsubmit="handleAddRule(event)">
+                    <div class="form-row">
+                        <div class="form-group flex-2">
+                            <label for="block-ip">Block Source IP</label>
+                            <input type="text" id="block-ip" class="form-input" placeholder="e.g. 10.0.0.5" required>
+                        </div>
+                        <div class="form-group flex-3">
+                            <label for="block-desc">Policy Description</label>
+                            <input type="text" id="block-desc" class="form-input" placeholder="e.g. Rogue host blacklisted">
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-add-rule" class="btn btn-rose">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Install Block Rule
+                    </button>
+                </form>
+
+                <!-- Active Rules List -->
+                <div class="acl-list-section">
+                    <div class="section-subheader">
+                        <h3>Installed Security Policies</h3>
+                        <span class="badge badge-neutral" id="rules-count-badge">0 Active</span>
+                    </div>
+
+                    <div id="acl-rules-container" class="acl-cards-list">
+                        <!-- Populated dynamically via JS -->
+                        <div class="empty-state">No custom blocking rules installed. Default permit policy is active.</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- SECTION E: SDN Flow-Rule Table -->
+        <section class="card" aria-label="SDN Flow-Rule Table">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">SDN Controller Flow-Rule Table</h2>
+                    <p class="card-subtitle">Active forwarding and filter rules installed across the simulated switches</p>
+                </div>
+                <div class="disclaimer-tag">
+                    <span>Simulated OpenFlow Table</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table" id="flow-rules-table">
+                    <thead>
+                        <tr>
+                            <th>Rule ID</th>
+                            <th>Priority</th>
+                            <th>Match Condition</th>
+                            <th>Action</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="flow-rules-tbody">
+                        <!-- Rendered by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footnote">
+                * Note for presentation: In Software-Defined Networking, the centralized controller pushes flow rules to switches. Higher numerical priority rules (e.g. Priority 100 DROP rules) are matched before the fallback rule (Priority 1 FORWARD).
+            </div>
+        </section>
+
+        <!-- SECTION F: Traffic Activity & Event Audit Log -->
+        <section class="card" aria-label="Traffic Activity & Event Log">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Traffic Activity & Event Audit Log</h2>
+                    <p class="card-subtitle">Real-time log of packet decisions, flow-rule additions, and access-control events</p>
+                </div>
+                <div class="card-actions">
+                    <button type="button" id="btn-clear-logs" class="btn btn-outline-danger btn-sm" onclick="confirmClearLogs()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Clear Activity Log
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive log-table-wrapper">
+                <table class="data-table" id="activity-log-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Source IP</th>
+                            <th>Destination IP</th>
+                            <th>Protocol</th>
+                            <th>Port</th>
+                            <th>Decision</th>
+                            <th>Simulated Hop Path / Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activity-log-tbody">
+                        <tr class="empty-row">
+                            <td colspan="7">No packet activity recorded yet. Send a simulated packet above to generate traffic logs.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer Note -->
+        <footer class="app-footer">
+            <p><strong>Educational SDN Prototype:</strong> Implements centralized control plane logic, OpenFlow-inspired flow matching, BFS shortest routing, and access control. Built with Python & Flask.</p>
+        </footer>
+    </main>
+
+    <!-- Confirmation Modal for Clear Log -->
+    <div id="clear-confirm-modal" class="modal-backdrop hidden">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Confirm Log Clear</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to clear all traffic activity and event audit logs? This action will reset the event history.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn btn-rose" onclick="executeClearLogs()">Yes, Clear Logs</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

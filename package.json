@@ -1,0 +1,12 @@
+{
+  "name": "cn-sdn-prototype",
+  "version": "1.0.0",
+  "description": "Software-Defined Networking (SDN) for Intelligent Traffic Management & Access Control",
+  "scripts": {
+    "dev": "python app.py",
+    "start": "python app.py",
+    "test": "python test_sdn.py"
+  },
+  "author": "",
+  "license": "MIT"
+}
